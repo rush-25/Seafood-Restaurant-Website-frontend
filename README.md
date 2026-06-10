@@ -10,6 +10,46 @@ The project is split into two distinct parts:
 
 ---
 
+## 🗂️ Folder Structure
+
+### Frontend (`/frontend`)
+```text
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── admin/       # Admin dashboard pages and components
+│   │   ├── components/  # Reusable UI components
+│   │   ├── pages/       # Public facing pages (Home, Menu, etc.)
+│   │   ├── App.jsx      # Main App component
+│   │   ├── Root.jsx     # Root layout wrapper
+│   │   └── routes.jsx   # Application routing
+│   ├── assets/          # Static assets (images, icons)
+│   ├── config/          # Configuration files
+│   ├── styles/          # Global styles
+│   └── main.jsx         # React application entry point
+├── .env                 # Environment variables
+├── package.json         # Project metadata and dependencies
+└── vite.config.js       # Vite configuration
+```
+
+### Backend (`/backend`)
+```text
+backend/
+├── src/
+│   ├── config/          # Database and environment configurations
+│   ├── controllers/     # Route logic handlers
+│   ├── middleware/      # Express middlewares (auth, validation)
+│   ├── models/          # Mongoose database schemas
+│   ├── routes/          # API route definitions
+│   ├── schemas/         # Zod validation schemas
+│   ├── services/        # Business logic and external services
+│   └── index.js         # Entry point for the Express server
+├── .env                 # Environment variables
+└── package.json         # Project metadata and dependencies
+```
+
+---
+
 ## ✨ Features
 
 ### Frontend (Customer & Admin UI)
@@ -82,6 +122,33 @@ Follow these steps to run the project locally.
    npm run dev
    ```
    *The application should now be accessible in your browser, typically at `http://localhost:5173`.*
+
+### 🏃‍♂️ How to Run Both Servers Concurrently
+
+To run the full application locally, you will need two separate terminal windows:
+
+**Terminal 1 (Backend):**
+```bash
+cd path/to/backend
+npm run dev
+```
+
+**Terminal 2 (Frontend):**
+```bash
+cd path/to/frontend
+npm run dev
+```
+
+### 📜 Available Scripts
+
+#### Backend
+- `npm start`: Starts the node server in production mode.
+- `npm run dev`: Starts the server with `nodemon` for auto-reloading during development.
+
+#### Frontend
+- `npm run dev`: Starts the Vite development server.
+- `npm run build`: Bundles the application for production.
+- `npm run preview`: Serves the production build locally for previewing.
 
 ---
 
