@@ -12,7 +12,7 @@ document.getElementById("reservation").addEventListener("submit", async function
     };
 
     try {
-        const respond = await fetch("http://localhost:8000/api/reservations", {
+        const respond = await fetch("https://seafood-restaurant-website-backtend.onrender.com/api/reservations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
