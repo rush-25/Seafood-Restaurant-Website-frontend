@@ -1,0 +1,35 @@
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6F4E37;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A67B5B;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6F4E37 #111111;
+}
+
+/* Selection color */
+::selection {
+  background-color: #6F4E37;
+  color: #E8CBA0;
+}
+
+::-moz-selection {
+  background-color: #6F4E37;
+  color: #E8CBA0;
+}
