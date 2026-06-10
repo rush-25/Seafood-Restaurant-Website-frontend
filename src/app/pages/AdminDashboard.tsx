@@ -16,6 +16,9 @@ import {
   LayoutDashboard,
   Lock,
   Trash2,
+  Send,
+  CheckCircle2,
+  Reply,
 } from 'lucide-react';
 
 interface Stats {
@@ -48,6 +51,8 @@ interface ContactMsg {
   time?: string;
   subject: string;
   message: string;
+  reply?: string;
+  repliedAt?: string;
   createdAt: string;
 }
 
@@ -82,6 +87,9 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<UserAccount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [replyingId, setReplyingId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [sendingReply, setSendingReply] = useState(false);
 
   // Auth guard
   useEffect(() => {
@@ -169,6 +177,32 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error('Error deleting reservation:', err);
       alert('An error occurred while deleting the reservation.');
+    }
+  };
+
+  const handleSendReply = async (contactId: string) => {
+    if (!replyText.trim()) return;
+
+    setSendingReply(true);
+    try {
+      const res = await fetch(`${API_BASE}/contacts/${contactId}/reply`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ reply: replyText }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setContacts(contacts.map(c => c._id === contactId ? data.data : c));
+        setReplyingId(null);
+        setReplyText('');
+      } else {
+        alert('Failed to send reply: ' + data.message);
+      }
+    } catch (err) {
+      console.error('Error sending reply:', err);
+      alert('An error occurred while sending the reply.');
+    } finally {
+      setSendingReply(false);
     }
   };
 
@@ -515,6 +549,54 @@ export default function AdminDashboard() {
                     <div className="bg-zinc-950/50 border border-white/5 rounded-xl p-4">
                       <p className="text-sm text-white/60 leading-relaxed whitespace-pre-wrap">{c.message}</p>
                     </div>
+
+                    {c.reply && (
+                      <div className="mt-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-2 text-xs text-emerald-400 font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Replied {c.repliedAt ? `on ${formatDate(c.repliedAt)}` : ''}
+                        </div>
+                        <p className="text-sm text-white/60 leading-relaxed whitespace-pre-wrap">{c.reply}</p>
+                      </div>
+                    )}
+
+                    {replyingId === c._id ? (
+                      <div className="mt-3 space-y-3">
+                        <textarea
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder="Write your reply..."
+                          rows={4}
+                          className="w-full bg-zinc-950/50 border border-white/10 rounded-xl p-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/50 resize-none"
+                        />
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleSendReply(c._id)}
+                            disabled={sendingReply || !replyText.trim()}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-black text-sm font-medium transition-colors disabled:opacity-50"
+                          >
+                            <Send className="w-4 h-4" />
+                            {sendingReply ? 'Sending...' : 'Send Reply'}
+                          </button>
+                          <button
+                            onClick={() => { setReplyingId(null); setReplyText(''); }}
+                            className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 text-sm font-medium transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-3">
+                        <button
+                          onClick={() => { setReplyingId(c._id); setReplyText(''); }}
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-sm font-medium transition-colors"
+                        >
+                          <Reply className="w-4 h-4" />
+                          {c.reply ? 'Reply Again' : 'Reply'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
