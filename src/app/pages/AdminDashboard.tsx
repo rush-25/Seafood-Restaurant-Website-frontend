@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   Reply,
 } from 'lucide-react';
+import { API_BASE_URL } from '@/config/api';
 
 interface Stats {
   totalReservations: number;
@@ -65,7 +66,7 @@ interface UserAccount {
   createdAt: string;
 }
 
-const API_BASE = 'http://localhost:8000/api/admin';
+const API_BASE = `${API_BASE_URL}/api/admin`;
 
 function getAdminToken() {
   return localStorage.getItem('adminToken');

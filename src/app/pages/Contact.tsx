@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, CalendarDays, ClockIcon } from 'lucide-react';
+import { API_BASE_URL } from '@/config/api';
 
 interface FormData {
   name: string;
@@ -92,7 +93,7 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/contact', {
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

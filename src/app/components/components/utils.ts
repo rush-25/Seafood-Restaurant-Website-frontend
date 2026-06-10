@@ -1,11 +1,12 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { API_BASE_URL } from "@/config/api";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const BASE_URL = 'http://localhost:8000/api/auth';
+const BASE_URL = `${API_BASE_URL}/api/auth`;
 
 export const registerUser = async (data: {
   name: string;

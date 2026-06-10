@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { API_BASE_URL } from '@/config/api';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8000/api/admin/login', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
