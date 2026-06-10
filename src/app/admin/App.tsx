@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { LoginPage } from "./components/LoginPage";
-import { Sidebar } from "./components/Sidebar";
-import { Dashboard } from "./components/Dashboard";
-import { Reservations } from "./components/Reservations";
-import { Messages } from "./components/Messages";
+import { LoginPage } from "./LoginPage";
+import { Sidebar } from "./Sidebar";
+import { Dashboard } from "./Dashboard";
+import { Reservations } from "./Reservations";
+import { Messages } from "./Messages";
 
 type Page = "dashboard" | "reservations" | "messages";
 
