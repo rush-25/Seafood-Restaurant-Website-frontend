@@ -127,15 +127,15 @@ Follow these steps to run the project locally.
 
 To run the full application locally, you will need two separate terminal windows:
 
-**Terminal 1 (Backend):**
+**Terminal 1 (Backend - Run this in your backend folder):**
 ```bash
-cd path/to/backend
+npm install
 npm run dev
 ```
 
-**Terminal 2 (Frontend):**
+**Terminal 2 (Frontend - Run this in your frontend folder):**
 ```bash
-cd path/to/frontend
+npm install
 npm run dev
 ```
 
