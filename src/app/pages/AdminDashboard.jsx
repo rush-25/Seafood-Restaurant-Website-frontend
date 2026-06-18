@@ -761,6 +761,7 @@ export default function AdminDashboard() {
                   type="password"
                   value={editFormData.password}
                   onChange={(e) => setEditFormData({...editFormData, password: e.target.value})}
+                  autoComplete="new-password"
                   className="w-full px-4 py-3 bg-zinc-950/50 border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-white placeholder:text-white/30"
                   placeholder="Leave blank to keep current password"
                 />
