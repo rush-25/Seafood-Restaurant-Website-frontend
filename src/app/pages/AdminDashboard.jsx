@@ -133,7 +133,16 @@ export default function AdminDashboard() {
         headers: authHeaders(),
         body: JSON.stringify(editFormData),
       });
-      const data = await res.json();
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        // This happens if the server returns HTML (e.g., 404 or 502 page) instead of JSON
+        alert(`Server returned an invalid response (${res.status} ${res.statusText}). It might still be deploying.`);
+        return;
+      }
+
       if (data.success) {
         setUsers(users.map(u => u._id === editingUser._id ? data.data : u));
         setEditingUser(null);
@@ -142,7 +151,7 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error('Error updating user:', err);
-      alert('An error occurred while updating the user.');
+      alert('An error occurred while communicating with the server.');
     } finally {
       setIsSaving(false);
     }
