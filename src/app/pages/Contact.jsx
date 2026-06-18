@@ -13,6 +13,7 @@ export default function Contact() {
     time: '',
     subject: '',
     message: '',
+    guests: '',
   });
 
   useEffect(() => {
@@ -66,6 +67,10 @@ export default function Contact() {
     if (!formData.time) newErrors.time = "Please select a time";
 
     if (!formData.subject) newErrors.subject = "Please select a subject";
+    if ((formData.subject === 'Reservation' || formData.subject === 'Private Event') && !formData.guests) {
+      newErrors.guests = "Please enter number of guests";
+    }
+
     if (!formData.message.trim()) {
       newErrors.message = "Message is required";
     } else if (formData.message.trim().length < 20) {
@@ -83,17 +88,30 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/contact`, {
+      const isReservation = formData.subject === 'Reservation' || formData.subject === 'Private Event';
+      const endpoint = isReservation ? `${API_BASE_URL}/api/reservations` : `${API_BASE_URL}/api/contact`;
+
+      let payload = { ...formData };
+      if (isReservation) {
+        payload.guests = parseInt(formData.guests, 10);
+        payload.specialRequests = formData.message;
+        delete payload.message;
+        delete payload.subject;
+      } else {
+        delete payload.guests;
+      }
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
 
       if (result.success) {
         setIsSubmitted(true);
-        setFormData({ name: '', email: '', phone: '', date: '', time: '', subject: '', message: '' });
+        setFormData({ name: '', email: '', phone: '', date: '', time: '', subject: '', message: '', guests: '' });
       } else {
         alert(result.message);
       }
@@ -212,24 +230,44 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  {/* Subject */}
-                  <div>
-                    <label className="block text-sm text-white/70 mb-2">Subject <span className="text-red-500">*</span></label>
-                    <select
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white ${errors.subject ? "border-red-500" : "border-white/10"
-                        }`}
-                    >
-                      <option value="">Select a subject</option>
-                      <option value="Reservation">Table Reservation</option>
-                      <option value="Private Event">Private Dining / Events</option>
-                      <option value="Menu Inquiry">Menu Inquiry</option>
-                      <option value="Feedback">Feedback / Compliments</option>
-                      <option value="Other">Other Inquiry</option>
-                    </select>
-                    {errors.subject && <p className="text-red-500 text-sm mt-1.5">{errors.subject}</p>}
+                  {/* Subject and Guests */}
+                  <div className={`grid gap-6 ${(formData.subject === 'Reservation' || formData.subject === 'Private Event') ? 'md:grid-cols-2' : ''}`}>
+                    <div>
+                      <label className="block text-sm text-white/70 mb-2">Subject <span className="text-red-500">*</span></label>
+                      <select
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white ${errors.subject ? "border-red-500" : "border-white/10"
+                          }`}
+                      >
+                        <option value="">Select a subject</option>
+                        <option value="Reservation">Table Reservation</option>
+                        <option value="Private Event">Private Dining / Events</option>
+                        <option value="Menu Inquiry">Menu Inquiry</option>
+                        <option value="Feedback">Feedback / Compliments</option>
+                        <option value="Other">Other Inquiry</option>
+                      </select>
+                      {errors.subject && <p className="text-red-500 text-sm mt-1.5">{errors.subject}</p>}
+                    </div>
+
+                    {(formData.subject === 'Reservation' || formData.subject === 'Private Event') && (
+                      <div>
+                        <label className="block text-sm text-white/70 mb-2">Number of Guests <span className="text-red-500">*</span></label>
+                        <input
+                          type="number"
+                          name="guests"
+                          value={formData.guests}
+                          onChange={handleChange}
+                          min="1"
+                          max="50"
+                          className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white ${errors.guests ? "border-red-500" : "border-white/10"
+                            }`}
+                          placeholder="E.g., 2"
+                        />
+                        {errors.guests && <p className="text-red-500 text-sm mt-1.5">{errors.guests}</p>}
+                      </div>
+                    )}
                   </div>
 
                   {/* Message */}
