@@ -19,6 +19,8 @@ import {
   Send,
   CheckCircle2,
   Reply,
+  Edit,
+  X,
 } from 'lucide-react';
 import { API_BASE_URL } from '@/config/api';
 
@@ -47,6 +49,9 @@ export default function AdminDashboard() {
   const [replyingId, setReplyingId] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [sendingReply, setSendingReply] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editFormData, setEditFormData] = useState({ name: '', email: '', phone: '', password: '' });
+  const [isSaving, setIsSaving] = useState(false);
 
   // Auth guard
   useEffect(() => {
@@ -114,6 +119,32 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error('Error deleting user:', err);
       alert('An error occurred while deleting the user.');
+    }
+  };
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+    if (!editingUser) return;
+    
+    setIsSaving(true);
+    try {
+      const res = await fetch(`${API_BASE}/users/${editingUser._id}`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify(editFormData),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUsers(users.map(u => u._id === editingUser._id ? data.data : u));
+        setEditingUser(null);
+      } else {
+        alert("Failed to update user: " + data.message);
+      }
+    } catch (err) {
+      console.error('Error updating user:', err);
+      alert('An error occurred while updating the user.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -633,13 +664,25 @@ export default function AdminDashboard() {
                           {formatTime(u.createdAt)}
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => handleDeleteUser(u._id)}
-                            className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors"
-                            title="Delete User"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => {
+                                setEditingUser(u);
+                                setEditFormData({ name: u.name, email: u.email, phone: u.phone || '', password: '' });
+                              }}
+                              className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 rounded-lg transition-colors"
+                              title="Edit User"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteUser(u._id)}
+                              className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors"
+                              title="Delete User"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -650,6 +693,90 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+
+      {/* Edit User Modal */}
+      {editingUser && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center py-8 px-4">
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setEditingUser(null)}
+          ></div>
+          <div className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-10">
+            <div className="flex items-center justify-between p-6 border-b border-white/5 bg-zinc-950/50">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Edit className="w-5 h-5 text-amber-400" />
+                Edit User
+              </h3>
+              <button
+                onClick={() => setEditingUser(null)}
+                className="p-2 rounded-xl hover:bg-white/5 transition-colors text-white/50 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleEditUser} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm text-white/60 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-white placeholder:text-white/30"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-white/60 mb-2">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-white placeholder:text-white/30"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-white/60 mb-2">Phone Number</label>
+                <input
+                  type="tel"
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-white placeholder:text-white/30"
+                  placeholder="Optional"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-white/60 mb-2">New Password</label>
+                <input
+                  type="password"
+                  value={editFormData.password}
+                  onChange={(e) => setEditFormData({...editFormData, password: e.target.value})}
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-white placeholder:text-white/30"
+                  placeholder="Leave blank to keep current password"
+                />
+              </div>
+              
+              <div className="flex items-center justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setEditingUser(null)}
+                  className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-black text-sm font-medium transition-colors disabled:opacity-50"
+                >
+                  {isSaving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
