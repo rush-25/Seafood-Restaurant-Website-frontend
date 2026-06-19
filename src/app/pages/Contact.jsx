@@ -64,12 +64,12 @@ export default function Contact() {
       newErrors.phone = "Please enter a valid Sri Lankan number (e.g. +94 77 123 4567)";
     }
 
-    if (!formData.date) newErrors.date = "Please select a date";
-    if (!formData.time) newErrors.time = "Please select a time";
-
     if (!formData.subject) newErrors.subject = "Please select a subject";
-    if ((formData.subject === 'Reservation' || formData.subject === 'Private Event') && !formData.guests) {
-      newErrors.guests = "Please enter number of guests";
+    
+    if (formData.subject === 'Reservation' || formData.subject === 'Private Event') {
+      if (!formData.date) newErrors.date = "Please select a date";
+      if (!formData.time) newErrors.time = "Please select a time";
+      if (!formData.guests) newErrors.guests = "Please enter number of guests";
     }
 
     if (!formData.message.trim()) {
@@ -201,62 +201,61 @@ export default function Contact() {
                     {errors.phone && <p className="text-red-500 text-sm mt-1.5">{errors.phone}</p>}
                   </div>
 
-                  {/* Date & Time */}
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {/* Date */}
-                    <div>
-                      <label className="block text-sm text-white/70 mb-2">Preferred Date <span className="text-red-500">*</span></label>
-                      <input
-                        type="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={handleChange}
-                        min={new Date().toISOString().split('T')[0]}
-                        className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white [color-scheme:dark] ${errors.date ? "border-red-500" : "border-white/10"
-                          }`}
-                      />
-                      {errors.date && <p className="text-red-500 text-sm mt-1.5">{errors.date}</p>}
-                    </div>
-
-                    {/* Time */}
-                    <div>
-                      <label className="block text-sm text-white/70 mb-2">Preferred Time <span className="text-red-500">*</span></label>
-                      <input
-                        type="time"
-                        name="time"
-                        value={formData.time}
-                        onChange={handleChange}
-                        min="18:00"
-                        max="23:00"
-                        className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white [color-scheme:dark] ${errors.time ? "border-red-500" : "border-white/10"
-                          }`}
-                      />
-                      {errors.time && <p className="text-red-500 text-sm mt-1.5">{errors.time}</p>}
-                    </div>
+                  {/* Subject */}
+                  <div>
+                    <label className="block text-sm text-white/70 mb-2">Subject <span className="text-red-500">*</span></label>
+                    <select
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white ${errors.subject ? "border-red-500" : "border-white/10"
+                        }`}
+                    >
+                      <option value="">Select a subject</option>
+                      <option value="Reservation">Table Reservation</option>
+                      <option value="Private Event">Private Dining / Events</option>
+                      <option value="Menu Inquiry">Menu Inquiry</option>
+                      <option value="Feedback">Feedback / Compliments</option>
+                      <option value="Other">Other Inquiry</option>
+                    </select>
+                    {errors.subject && <p className="text-red-500 text-sm mt-1.5">{errors.subject}</p>}
                   </div>
 
-                  {/* Subject and Guests */}
-                  <div className={`grid gap-6 ${(formData.subject === 'Reservation' || formData.subject === 'Private Event') ? 'md:grid-cols-2' : ''}`}>
-                    <div>
-                      <label className="block text-sm text-white/70 mb-2">Subject <span className="text-red-500">*</span></label>
-                      <select
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white ${errors.subject ? "border-red-500" : "border-white/10"
-                          }`}
-                      >
-                        <option value="">Select a subject</option>
-                        <option value="Reservation">Table Reservation</option>
-                        <option value="Private Event">Private Dining / Events</option>
-                        <option value="Menu Inquiry">Menu Inquiry</option>
-                        <option value="Feedback">Feedback / Compliments</option>
-                        <option value="Other">Other Inquiry</option>
-                      </select>
-                      {errors.subject && <p className="text-red-500 text-sm mt-1.5">{errors.subject}</p>}
-                    </div>
+                  {/* Date, Time, Guests (Only for Reservations) */}
+                  {(formData.subject === 'Reservation' || formData.subject === 'Private Event') && (
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {/* Date */}
+                      <div>
+                        <label className="block text-sm text-white/70 mb-2">Preferred Date <span className="text-red-500">*</span></label>
+                        <input
+                          type="date"
+                          name="date"
+                          value={formData.date}
+                          onChange={handleChange}
+                          min={new Date().toISOString().split('T')[0]}
+                          className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white [color-scheme:dark] ${errors.date ? "border-red-500" : "border-white/10"
+                            }`}
+                        />
+                        {errors.date && <p className="text-red-500 text-sm mt-1.5">{errors.date}</p>}
+                      </div>
 
-                    {(formData.subject === 'Reservation' || formData.subject === 'Private Event') && (
+                      {/* Time */}
+                      <div>
+                        <label className="block text-sm text-white/70 mb-2">Preferred Time <span className="text-red-500">*</span></label>
+                        <input
+                          type="time"
+                          name="time"
+                          value={formData.time}
+                          onChange={handleChange}
+                          min="18:00"
+                          max="23:00"
+                          className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all text-white [color-scheme:dark] ${errors.time ? "border-red-500" : "border-white/10"
+                            }`}
+                        />
+                        {errors.time && <p className="text-red-500 text-sm mt-1.5">{errors.time}</p>}
+                      </div>
+
+                      {/* Guests */}
                       <div>
                         <label className="block text-sm text-white/70 mb-2">Number of Guests <span className="text-red-500">*</span></label>
                         <input
@@ -272,8 +271,8 @@ export default function Contact() {
                         />
                         {errors.guests && <p className="text-red-500 text-sm mt-1.5">{errors.guests}</p>}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   {/* Message */}
                   <div>
