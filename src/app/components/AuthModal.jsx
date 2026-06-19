@@ -46,8 +46,10 @@ export function AuthModal({ isOpen, onClose, onLogin, onSignup, initialMode }) {
             if (formData.name.trim().length < 2) {
                 newErrors.name = "Name must be at least 2 characters long.";
             }
-            if (formData.phone && !/^\+?[0-9\s\-]{7,15}$/.test(formData.phone)) {
-                newErrors.phone = "Please enter a valid phone number.";
+            if (!formData.phone || !formData.phone.trim()) {
+                newErrors.phone = "Phone number is required.";
+            } else if (!/^(0|\+94)[\s-]*\d{2}[\s-]*\d{3}[\s-]*\d{4}$/.test(formData.phone)) {
+                newErrors.phone = "Please enter a valid phone number (e.g. 0712345678 or +94712345678).";
             }
             if (formData.password !== formData.confirmPassword) {
                 newErrors.confirmPassword = "Passwords do not match.";
@@ -200,12 +202,13 @@ export function AuthModal({ isOpen, onClose, onLogin, onSignup, initialMode }) {
                                             </div>
                                             <div>
                                                 <label htmlFor="phone" className="block text-sm text-muted-foreground mb-2">
-                                                    Phone Number (Optional)
+                                                    Phone Number
                                                 </label>
                                                 <input
                                                     type="tel"
                                                     id="phone"
                                                     name="phone"
+                                                    required
                                                     value={formData.phone}
                                                     onChange={handleChange}
                                                     className={`w-full px-4 py-3 bg-input-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white ${errors.phone ? "border-red-500" : "border-border"
