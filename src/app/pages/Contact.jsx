@@ -60,8 +60,8 @@ export default function Contact() {
 
     if (!formData.phone) {
       newErrors.phone = "Phone number is required";
-    } else if (!/^\+94\s?\d{2}\s?\d{3}\s?\d{4}$/.test(formData.phone)) {
-      newErrors.phone = "Please enter a valid Sri Lankan number (e.g. +94 77 123 4567)";
+    } else if (!/^(?:\+94|0)\s?\d{2}\s?\d{3}\s?\d{4}$/.test(formData.phone)) {
+      newErrors.phone = "Please enter a valid Sri Lankan number (e.g. 077 123 4567 or +94 77 123 4567)";
     }
 
     if (!formData.subject) newErrors.subject = "Please select a subject";
@@ -197,7 +197,7 @@ export default function Contact() {
                       maxLength={15}
                       className={`w-full px-6 py-4 bg-zinc-950 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all ${errors.phone ? "border-red-500 focus:ring-red-500" : "border-white/10"
                         }`}
-                      placeholder="+94 77 123 4567"
+                      placeholder="077 123 4567 or +94 77 123 4567"
                     />
                     {errors.phone && <p className="text-red-500 text-sm mt-1.5">{errors.phone}</p>}
                   </div>
