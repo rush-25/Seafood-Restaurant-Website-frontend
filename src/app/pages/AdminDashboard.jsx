@@ -436,6 +436,7 @@ export default function AdminDashboard() {
                       <th className="text-left px-6 py-4 text-white/40 font-medium">Date</th>
                       <th className="text-left px-6 py-4 text-white/40 font-medium">Time</th>
                       <th className="text-left px-6 py-4 text-white/40 font-medium">Guests</th>
+                      <th className="text-left px-6 py-4 text-white/40 font-medium">Type</th>
                       <th className="text-left px-6 py-4 text-white/40 font-medium">Special Requests</th>
                       <th className="text-left px-6 py-4 text-white/40 font-medium">Submitted</th>
                       <th className="text-right px-6 py-4 text-white/40 font-medium">Action</th>
@@ -464,6 +465,11 @@ export default function AdminDashboard() {
                         <td className="px-6 py-4">
                           <span className="bg-amber-400/10 text-amber-400 px-2.5 py-1 rounded-lg text-xs font-medium">
                             {r.guests}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-white/70 text-xs">
+                          <span className={r.type === 'Private Event' ? 'text-purple-400 bg-purple-400/10 px-2.5 py-1 rounded-lg' : 'text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-lg'}>
+                            {r.type || 'Table Reservation'}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-white/40 max-w-[200px] truncate">
