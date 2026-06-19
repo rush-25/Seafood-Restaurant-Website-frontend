@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, CalendarDays, ClockIcon } from 'lucide-react';
 import { API_BASE_URL } from '@/config/api';
+import { toast } from 'sonner';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -83,7 +84,10 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields correctly.");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -110,13 +114,14 @@ export default function Contact() {
       const result = await response.json();
 
       if (result.success) {
+        toast.success("Your message was sent successfully!");
         setIsSubmitted(true);
         setFormData({ name: '', email: '', phone: '', date: '', time: '', subject: '', message: '', guests: '' });
       } else {
-        alert(result.message);
+        toast.error(result.message);
       }
     } catch (error) {
-      alert("Failed to send message. Please try again.");
+      toast.error("Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
