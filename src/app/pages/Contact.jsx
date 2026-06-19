@@ -97,6 +97,7 @@ export default function Contact() {
 
       let payload = { ...formData };
       if (isReservation) {
+        payload.type = formData.subject === 'Private Event' ? 'Private Event' : 'Table Reservation';
         payload.guests = parseInt(formData.guests, 10);
         payload.specialRequests = formData.message;
         delete payload.message;
