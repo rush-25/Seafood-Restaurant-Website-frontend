@@ -281,12 +281,12 @@ export function AuthModal({ isOpen, onClose, onLogin, onSignup, initialMode }) {
 
                                     {mode === "login" && (
                                         <div className="text-right">
-                                            <button
+                                            {/* <button
                                                 type="button"
                                                 className="text-sm text-accent hover:text-accent/80 transition-colors"
                                             >
                                                 Forgot Password?
-                                            </button>
+                                            </button> */}
                                         </div>
                                     )}
 
