@@ -3,6 +3,7 @@ import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { WhatsAppButton } from "./components/WhatsAppButton";
 import { ScrollToTop, BackToTopButton } from "./components/ScrollToTop";
+import { Toaster } from "./components/components/sonner";
 
 export default function Root() {
   return (
@@ -15,6 +16,7 @@ export default function Root() {
       <Footer />
       <BackToTopButton />
       <WhatsAppButton />
+      <Toaster position="bottom-right" />
     </div>
   );
 }
